@@ -11,10 +11,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
+ public class PaymentService {
+     private WebApiExRateProvider exRateProvider;
 
-abstract public class PaymentService {
-    public Payment perpaer(Long orderId, String currency, BigDecimal foreignCurrencyAmount) throws IOException {
-        BigDecimal exRate = getExRate(currency);
+     public PaymentService(){
+         this.exRateProvider = new WebApiExRateProvider();
+
+     }    public Payment perpaer(Long orderId, String currency, BigDecimal foreignCurrencyAmount) throws IOException {
+        WebApiExRateProvider exRateProvider = new WebApiExRateProvider();
+        BigDecimal exRate = exRateProvider.getWebExRate(currency);
 
         BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exRate);
         LocalDateTime validUntil = LocalDateTime.now().plusMinutes(30);
@@ -22,8 +27,4 @@ abstract public class PaymentService {
         return new Payment(orderId, currency, foreignCurrencyAmount, exRate, convertedAmount, validUntil);
     }
 
-    abstract BigDecimal getExRate(String currency) throws IOException ;
-
-
-
-}
+ }
