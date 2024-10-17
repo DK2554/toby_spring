@@ -10,16 +10,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.stream.Collectors;
 
-public class WebApiExRateProvider {
-    BigDecimal getWebExRate(String currency) throws IOException {
-        URL url = new URL("https://open.er-api.com/v6/latest/USD"+ currency);
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+public class WebApiExRateProvider implements ExRateProvider {
+    @Override
+    public BigDecimal getExRate(String currency) throws IOException {
+        URL url = new URL("https://open.er-api.com/v6/latest/USD" + currency);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String collect = bufferedReader.lines().collect(Collectors.joining());
         bufferedReader.close();
 
         ObjectMapper mapper = new ObjectMapper();
-        ExRateData data =mapper.readValue(collect, ExRateData.class);
+        ExRateData data = mapper.readValue(collect, ExRateData.class);
         return data.rates().get("KRW");
     }
 }
+

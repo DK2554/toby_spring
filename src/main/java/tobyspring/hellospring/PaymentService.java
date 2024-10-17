@@ -12,14 +12,14 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
  public class PaymentService {
-     private WebApiExRateProvider exRateProvider;
+     private ExRateProvider exRateProvider;
 
      public PaymentService(){
-         this.exRateProvider = new WebApiExRateProvider();
+         this.exRateProvider = new SimpleExRateService();
 
      }    public Payment perpaer(Long orderId, String currency, BigDecimal foreignCurrencyAmount) throws IOException {
         WebApiExRateProvider exRateProvider = new WebApiExRateProvider();
-        BigDecimal exRate = exRateProvider.getWebExRate(currency);
+        BigDecimal exRate = exRateProvider.getExRate(currency);
 
         BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exRate);
         LocalDateTime validUntil = LocalDateTime.now().plusMinutes(30);
